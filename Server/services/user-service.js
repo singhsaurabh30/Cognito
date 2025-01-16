@@ -36,7 +36,7 @@ export class UserService{
             const token=createToken({
                 email : data.email
             });
-            return token;
+            return {token,userData};
         } catch (error) {
             console.log('something went wrong while signing in');
             throw error;

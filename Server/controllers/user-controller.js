@@ -43,15 +43,15 @@ export const login = async (req, res) => {
     const response = await userService.login({ email, password });
     return res
       .status(200)
-      .cookie("token", response, {
+      .cookie("token", response.token, {
         httpOnly: true,
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
         success:true,
-        message:"user logged in",
-        user:email
+        message:`Welcome back ${response.userData.name}`,
+        user:response.userData
       });
   } catch (error) {
     return res.status(500).json({
