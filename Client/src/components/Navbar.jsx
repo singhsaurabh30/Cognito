@@ -30,6 +30,7 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
 
@@ -57,12 +58,12 @@ export const Navbar = () => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
+              <DropdownMenuContent className="w-56"> 
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>My learning</DropdownMenuItem>
-                  <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                  <DropdownMenuItem><Link to="/mylearning">My learning</Link></DropdownMenuItem>
+                  <DropdownMenuItem><Link to="/profile">Edit Profile</Link></DropdownMenuItem>
                   <DropdownMenuItem>Log out</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
