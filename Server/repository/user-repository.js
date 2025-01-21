@@ -23,5 +23,24 @@ export class UserRepository{
             throw(error);
         }
     }
+    async getByUserId(id){
+        try {
+            const userData=await User.findById(id).select("-password");
+            
+            return userData;
+        } catch (error) {
+            console.log('something went wrong in repository layer');
+            throw(error);
+        }
+    }
+    async updateUser(id,data){
+        try {
+            const user=await User.findByIdAndUpdate(id,data,{new:true}).select("-password");
+            return user;
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
 
 }

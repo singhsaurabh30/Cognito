@@ -1,4 +1,5 @@
 import { UserService } from "../services/user-service.js";
+import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 const userService = new UserService();
 
@@ -21,7 +22,7 @@ export const register = async (req, res) => {
       err: {},
     });
   } catch (error) {
-    console.log("in contro")
+    console.log("in contro");
     console.log(error);
     return res.status(500).json({
       success: false,
@@ -49,14 +50,66 @@ export const login = async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
-        success:true,
-        message:`Welcome back ${response.userData.name}`,
-        user:response.userData
+        success: true,
+        message: `Welcome back ${response.userData.name}`,
+        user: response.userData,
       });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "user failed to login",
+      err: { error },
+    });
+  }
+};
+export const logout = async (req, res) => {
+  try {
+    return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+      message: "logout successfull",
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "user failed to logout",
+      err: { error },
+    });
+  }
+};
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await userService.getByUserId(req.id);
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "failed to load user",
+      err: { error },
+    });
+  }
+};
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.id;
+    const name = req.body.name;
+    const photoPhoto = req.file;
+    const updateUser = await userService.updateProfile(
+      userId,
+      name,
+      photoPhoto
+    );
+    return res.status(200).json({
+      success: true,
+      updateUser,
+      message: "profile updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "failed to updated user",
       err: { error },
     });
   }
