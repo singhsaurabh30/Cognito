@@ -75,7 +75,7 @@ const Login = () => {
       navigate("/");
     }
     if(loginError){
-      toast.success(loginError.data.message||"Signup Failed")
+      toast.success(loginError?.data.message||"Signup Failed")
     }
   },[
     loginIsLoading,

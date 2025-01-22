@@ -22,7 +22,6 @@ export const register = async (req, res) => {
       err: {},
     });
   } catch (error) {
-    console.log("in contro");
     console.log(error);
     return res.status(500).json({
       success: false,
