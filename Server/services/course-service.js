@@ -38,20 +38,67 @@ export class CourseService {
         }
         courseThumbnail = await uploadMedia(thumbnail.path);
       }
-      if(courseThumbnail) data.courseThumbnail=courseThumbnail.secure_url;
-      
-      const response = await this.courseRepository.editCourse(courseId,data);
-      
+      if (courseThumbnail) data.courseThumbnail = courseThumbnail.secure_url;
+
+      const response = await this.courseRepository.editCourse(courseId, data);
+
       return response;
     } catch (error) {
       console.log("something went wrong in Course service");
       throw error;
     }
   }
-  async getCourseById(id){
+  async getCourseById(id) {
     try {
-      const course=await this.courseRepository.getCourseById(id);
+      const course = await this.courseRepository.getCourseById(id);
       return course;
+    } catch (error) {
+      console.log("something went wrong in Course service");
+      throw error;
+    }
+  }
+  async createLecture(id, lectureTitle) {
+    try {
+      const course = await this.courseRepository.getCourseById(id);
+      if (!course) return course;
+      const lecture = await this.courseRepository.createLecture({
+        lectureTitle,
+      });
+      course.lectures.push(lecture._id);
+      await course.save();
+      return lecture;
+    } catch (error) {
+      console.log("something went wrong in Course service");
+      throw error;
+    }
+  }
+  async getCourseLecture(id) {
+    try {
+      const course = await this.courseRepository.getCourseLecture(id);
+      return course;
+    } catch (error) {
+      console.log("something went wrong in Course service");
+      throw error;
+    }
+  }
+  async editLecture(data) {
+    try {
+      const lecture = await this.courseRepository.getLectureById(
+        data.lectureId
+      );
+      if (!lecture) return lecture;
+      if (data.lectureTitle) lecture.lectureTitle = data.lectureTitle;
+      if (data.vedioInfo.vedioUrl) lecture.vedioUrl = data.vedioInfo.vedioUrl;
+      if (data.vedioInfo.publicId) lecture.publicId = data.vedioInfo.publicId;
+      if (data.isPreviewFree) lecture.isPreviewFree = data.isPreviewFree;
+      await lecture.save();
+      const course = await this.courseRepository.getCourseById(data.courseId);
+      //ensuring that course has lecture
+      if (course && !course.lectures.includes(lecture._id)) {
+        course.lectures.push(lecture._id);
+        await course.save();
+      }
+      return lecture;
     } catch (error) {
       console.log("something went wrong in Course service");
       throw error;

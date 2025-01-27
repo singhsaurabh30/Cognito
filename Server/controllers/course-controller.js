@@ -1,3 +1,4 @@
+import { Lecture } from "../models/lecture.js";
 import { CourseService } from "../services/course-service.js";
 
 const courseService = new CourseService();
@@ -67,7 +68,11 @@ export const editCourse = async (req, res) => {
     if (data.coursePrice) editData.coursePrice = data.coursePrice;
     const thumbnail = req.file;
     const courseId = req.params.courseId;
-    const response = await courseService.editCourse(editData,thumbnail,courseId);
+    const response = await courseService.editCourse(
+      editData,
+      thumbnail,
+      courseId
+    );
     return res.status(200).json({
       response,
       message: "Course Updated Sucessfully",
@@ -101,3 +106,76 @@ export const getCourseById = async (req, res) => {
     });
   }
 };
+export const createLecture = async (req, res) => {
+  try {
+    const { lectureTitle } = req.body;
+    const { courseId } = req.params;
+    console.log(lectureTitle, courseId);
+    if (!courseId) {
+      return res.status(404).json({
+        message: "Course not found!",
+      });
+    }
+    const response = await courseService.createLecture(courseId, lectureTitle);
+    if (!response) {
+      return res.status(404).json({
+        message: "Course not found!",
+      });
+    }
+    return res.status(201).json({
+      response,
+      message: "Lecture Created",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to create lecture",
+      err: error,
+    });
+  }
+};
+export const getCourseLecture = async (req,res) => {
+  try {
+    const {courseId}=req.params;
+    const course=await courseService.getCourseLecture(courseId);
+    if(!course){
+      return res.status(404).json({
+        message:"Course Not found"
+      });
+    }
+    return res.status(200).json({
+      lectures:course.lectures
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to get course lecture",
+      err: error,
+    });
+  }
+};
+export const editLecture=async (req,res)=>{
+  try {
+    const {lectureTitle,vedioInfo,isPreviewFree}=req.body;
+    const {courseId,lectureId}=req.params;
+    const lecture=await courseService.editLecture({lectureTitle,vedioInfo,isPreviewFree,courseId,lectureId});
+    if(!lecture){
+      return res.status(404).json({
+        message:"Lecture Not Found"
+      })
+    }
+    return res.status(200).json({
+      lecture,
+      message:"Lecture updated successfully"
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to edit lecture",
+      err: error,
+    });
+  }
+}

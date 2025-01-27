@@ -1,4 +1,5 @@
 import { Course } from "../models/course.js";
+import { Lecture } from "../models/lecture.js";
 
 export class CourseRepository{
     async create(data){
@@ -35,6 +36,34 @@ export class CourseRepository{
             return course;
         } catch (error) {
             console.log("something went wrong in repository while finding course");
+            throw(error);
+        }
+    }
+    async createLecture(data){
+        try {
+            const lecture=await Lecture.create(data);
+            return lecture;
+        } catch (error) {
+            console.log("something went wrong in repository while creating lecture");
+            throw(error);
+        }
+    }
+
+    async getCourseLecture(id){
+        try {
+            const course=await Course.findById(id).populate("lectures");
+            return course;
+        } catch (error) {
+            console.log("something went wrong in repository while getting course lecture");
+            throw(error);
+        }
+    }
+    async getLectureById(id){
+        try {
+            const lecture=await Lecture.findById(id);
+            return lecture;
+        } catch (error) {
+            console.log("something went wrong in repository while getting lecture");
             throw(error);
         }
     }
