@@ -10,4 +10,32 @@ export class CourseRepository{
             throw(error);
         }
     } 
+    async getCourseByCreator(data){
+        try {
+            const courses=await Course.find(data);
+            return courses;
+        } catch (error) {
+            console.log("something went wrong in repository while getting course by creator");
+            throw(error);
+        }
+    }
+    async editCourse(id,data){
+        try {
+            const response=await Course.findByIdAndUpdate(id,data,{new:true});
+            return response;
+        } catch (error) {
+            console.log("something went wrong in repository while editing course");
+            throw(error);
+        }
+    }
+    async getCourseById(id){
+        try {
+            const course=await Course.findById(id);
+
+            return course;
+        } catch (error) {
+            console.log("something went wrong in repository while finding course");
+            throw(error);
+        }
+    }
 }

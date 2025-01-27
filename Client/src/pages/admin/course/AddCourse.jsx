@@ -28,6 +28,12 @@ const AddCourse = () => {
   const createCourseHandler = async () => {
     await createCourse({courseTitle,category});
   };
+  useEffect(()=>{
+    if(isSuccess){
+        toast.success(data?.message || "Course created.");
+        navigate("/admin/course");
+    }
+  },[isSuccess, error])
   return (
     <div className="flex-1 mx-10">
       <div className="mb-4">

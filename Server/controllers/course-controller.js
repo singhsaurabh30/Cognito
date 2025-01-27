@@ -3,7 +3,7 @@ import { CourseService } from "../services/course-service.js";
 const courseService = new CourseService();
 export const createCourse = async (req, res) => {
   try {
-    const {courseTitle,category}=req.body;
+    const { courseTitle, category } = req.body;
     if (!courseTitle || !category) {
       return res.status(400).json({
         success: false,
@@ -11,7 +11,7 @@ export const createCourse = async (req, res) => {
         err: {},
       });
     }
-    
+
     const course = await courseService.createCourse({
       courseTitle,
       category,
@@ -21,7 +21,7 @@ export const createCourse = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "course created",
-      user: course,
+      course: course,
       err: {},
     });
   } catch (error) {
@@ -29,6 +29,74 @@ export const createCourse = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "failed to create course",
+      err: error,
+    });
+  }
+};
+export const getCreatorCourse = async (req, res) => {
+  try {
+    const userId = req.id;
+    const courses = await courseService.getCourseByCreator({ creator: userId });
+    if (!courses) {
+      return res.status(404).json({
+        courses: [],
+        message: "Course not found",
+      });
+    }
+    return res.status(200).json({
+      courses,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to get creator course",
+      err: error,
+    });
+  }
+};
+export const editCourse = async (req, res) => {
+  try {
+    const data = req.body;
+    const editData = {};
+    if (data.courseTitle) editData.courseTitle = data.courseTitle;
+    if (data.subTitle) editData.subTitle = data.subTitle;
+    if (data.description) editData.description = data.description;
+    if (data.category) editData.category = data.category;
+    if (data.courseLevel) editData.courseLevel = data.courseLevel;
+    if (data.coursePrice) editData.coursePrice = data.coursePrice;
+    const thumbnail = req.file;
+    const courseId = req.params.courseId;
+    const response = await courseService.editCourse(editData,thumbnail,courseId);
+    return res.status(200).json({
+      response,
+      message: "Course Updated Sucessfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to edit course",
+      err: error,
+    });
+  }
+};
+export const getCourseById = async (req, res) => {
+  try {
+    const course = await courseService.getCourseById(req.params.courseId);
+    if (!course) {
+      return res.status(404).json({
+        message: "Course not found!",
+      });
+    }
+    return res.status(200).json({
+      course,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to get course by Id",
       err: error,
     });
   }
