@@ -1,3 +1,4 @@
+import { query } from "express";
 import { Lecture } from "../models/lecture.js";
 import { CourseService } from "../services/course-service.js";
 
@@ -135,18 +136,18 @@ export const createLecture = async (req, res) => {
     });
   }
 };
-export const getCourseLecture = async (req,res) => {
+export const getCourseLecture = async (req, res) => {
   try {
-    const {courseId}=req.params;
-    const course=await courseService.getCourseLecture(courseId);
-    if(!course){
+    const { courseId } = req.params;
+    const course = await courseService.getCourseLecture(courseId);
+    if (!course) {
       return res.status(404).json({
-        message:"Course Not found"
+        message: "Course Not found",
       });
     }
     return res.status(200).json({
-      lectures:course.lectures
-    })
+      lectures: course.lectures,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -156,26 +157,97 @@ export const getCourseLecture = async (req,res) => {
     });
   }
 };
-export const editLecture=async (req,res)=>{
+export const editLecture = async (req, res) => {
   try {
-    const {lectureTitle,vedioInfo,isPreviewFree}=req.body;
-    const {courseId,lectureId}=req.params;
-    const lecture=await courseService.editLecture({lectureTitle,vedioInfo,isPreviewFree,courseId,lectureId});
-    if(!lecture){
+    const { lectureTitle, videoInfo, isPreviewFree } = req.body;
+    const { courseId, lectureId } = req.params;
+    const lecture = await courseService.editLecture({
+      lectureTitle,
+      videoInfo,
+      isPreviewFree,
+      courseId,
+      lectureId,
+    });
+    if (!lecture) {
       return res.status(404).json({
-        message:"Lecture Not Found"
-      })
+        message: "Lecture Not Found",
+      });
     }
     return res.status(200).json({
       lecture,
-      message:"Lecture updated successfully"
-    })
+      message: "Lecture updated successfully",
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
       success: false,
-      message: "failed to edit lecture",
+      message: "failed to update lecture",
       err: error,
     });
   }
-}
+};
+export const removeLecture = async (req, res) => {
+  try {
+    const { lectureId } = req.params;
+    const lecture = await courseService.removeLecture(lectureId);
+    if (!lecture) {
+      return res.status(404).json({
+        message: "Lecture not found!",
+      });
+    }
+    return res.status(200).json({
+      message: "Lecture removed successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "failed to remove lecture",
+      err: error,
+    });
+  }
+};
+export const getLectureById = async (req, res) => {
+  try {
+    const { lectureId } = req.params;
+    const lecture = await courseService.getLectureById(lectureId);
+    if (!lecture) {
+      return res.status(404).json({
+        message: "Lecture not found!",
+      });
+    }
+    return res.status(200).json({
+      lecture,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "failed to get lecture",
+      err: error,
+    });
+  }
+};
+//Publish or unpublish the course
+export const toggleTheCourseStatus = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const course = await courseService.toggleTheCourseStatus(
+      courseId,
+      req.query.publish
+    );
+    if (!course) {
+      return res.status(404).json({
+        message: "Course not found!",
+      });
+    }
+    const statusMessage = course.isPublished ? "Published" : "Unpublished";
+    return res.status(200).json({
+      message: `Course is ${statusMessage}`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "failed to Publish or unpublish the course",
+      err: error,
+    });
+  }
+};

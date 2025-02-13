@@ -60,9 +60,10 @@ export const Navbar = () => {
       <div className="mx-auto max-w-7xl hidden md:flex justify-between items-center gap-10 h-full">
         <div className="flex items-center gap-2">
           <School size={"30"} />
+          <Link to="/">
           <h1 className="hidden md:block font-extrabold text-2xl">
             E-Learning
-          </h1>
+          </h1></Link>
         </div>
         {/*User Icon and Dark mode */}
         <div className="flex items-center gap-8">

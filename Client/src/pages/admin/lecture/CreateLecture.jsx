@@ -52,7 +52,7 @@ const CreateLecture = () => {
           <Label>Title</Label>
           <Input
             type="text"
-            placeholder="Your Course Name"
+            placeholder="Your Lecture Name"
             value={lectureTitle}
             onChange={(e) => {
               setLectureTitle(e.target.value);

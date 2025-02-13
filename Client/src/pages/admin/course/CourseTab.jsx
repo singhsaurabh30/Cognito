@@ -22,6 +22,7 @@ import {
 import {
   useEditCourseMutation,
   useGetCourseByIdQuery,
+  useToggleCourseMutation,
 } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -42,9 +43,10 @@ const CourseTab = () => {
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const [editCourse, { data, isSuccess, isLoading, error }] =
     useEditCourseMutation();
+    const [publishCourse,{}]=useToggleCourseMutation();
   const navigate = useNavigate();
   const courseId = params.courseId;
-  const { data: getCourseByIdData, isLoading: getCourseByIdIsLoading } =
+  const { data: getCourseByIdData, isLoading: getCourseByIdIsLoading,refetch } =
     useGetCourseByIdQuery(courseId);
   const onChangehandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -64,6 +66,17 @@ const CourseTab = () => {
       fileReader.readAsDataURL(file);
     }
   };
+  const courseStatusToggler=async (query)=>{
+      try {
+        const response=await publishCourse({courseId,publish:query});
+        if(response.data){
+          refetch();
+          toast.success(response.data.message);
+        }
+      } catch (error) {
+        toast.error("Failed to publish or unpublish Course");
+      }
+  }
   useEffect(() => {
   
     if (getCourseByIdData?.course) {
@@ -109,8 +122,8 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div className="space-x-2">
-          <Button variant="outline">
-            {isLoading ? "Unpublished" : "Publish"}
+          <Button disabled={getCourseByIdData?.course.lectures.length===0} variant="outline" onClick={()=>{courseStatusToggler(getCourseByIdData?.course.isPublished?"false":"true")}}>
+            {getCourseByIdData?.course.isPublished? "Unpublished" : "Publish"}
           </Button>
           <Button>Remove Course</Button>
         </div>

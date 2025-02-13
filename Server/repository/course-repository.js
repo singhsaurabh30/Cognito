@@ -67,4 +67,26 @@ export class CourseRepository{
             throw(error);
         }
     }
+    async deleteLectureById(id){
+        try {
+            const lecture=await Lecture.findByIdAndDelete(id);
+            return lecture;
+        } catch (error) {
+            console.log("something went wrong in repository while deleting lecture");
+            throw(error);
+        }
+    }
+    async removeLectureFromAssociatedCourse(id){
+        try {
+            await Course.findOneAndUpdate(
+                {lectures:id}, //find course which containes lecture with lectureId as id
+                {$pull:{lectures:id}} //remove lectureId from lectures array
+
+            )
+        } catch (error) {
+            console.log("something went wrong in repository while deleting lecture from course");
+            throw(error);
+        }
+    }
 }
+

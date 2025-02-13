@@ -86,12 +86,15 @@ export class CourseService {
       const lecture = await this.courseRepository.getLectureById(
         data.lectureId
       );
+      console.log(data);
+      
       if (!lecture) return lecture;
       if (data.lectureTitle) lecture.lectureTitle = data.lectureTitle;
-      if (data.vedioInfo.vedioUrl) lecture.vedioUrl = data.vedioInfo.vedioUrl;
-      if (data.vedioInfo.publicId) lecture.publicId = data.vedioInfo.publicId;
+      if (data.videoInfo?.videoUrl) lecture.videoUrl = data.videoInfo.videoUrl;
+      if (data.videoInfo?.publicId) lecture.publicId = data.videoInfo.publicId;
       if (data.isPreviewFree) lecture.isPreviewFree = data.isPreviewFree;
       await lecture.save();
+      console.log(lecture);
       const course = await this.courseRepository.getCourseById(data.courseId);
       //ensuring that course has lecture
       if (course && !course.lectures.includes(lecture._id)) {
@@ -101,6 +104,43 @@ export class CourseService {
       return lecture;
     } catch (error) {
       console.log("something went wrong in Course service");
+      throw error;
+    }
+  }
+  async removeLecture(id){
+    try {
+      const lecture=await this.courseRepository.deleteLectureById(id);
+      if(!lecture) return lecture;
+      //delete lecture from cloudinary
+      if(lecture.publicId){
+        await deleteMediaFromCloudinary(lecture.publicId);
+      }
+      await this.courseRepository.removeLectureFromAssociatedCourse(id);
+      return lecture;
+
+    } catch (error) {
+      console.log("something went wrong in Course service while removing lecture");
+      throw error;
+    }
+  }
+  async getLectureById(id){
+    try {
+      const lecture=await this.courseRepository.getLectureById(id);
+      return lecture;
+    } catch (error) {
+      console.log("something went wrong in Course service while getting lecture");
+      throw error;
+    }
+  }
+  async toggleTheCourseStatus(id,publish){
+    try {
+      const course=await this.courseRepository.getCourseById(id);
+      if(!course) return course;
+      course.isPublished = publish === "true";
+      await course.save();
+      return course;
+    } catch (error) {
+      console.log("something went wrong in Course service while toggling course status");
       throw error;
     }
   }
