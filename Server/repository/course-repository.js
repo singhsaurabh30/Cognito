@@ -88,5 +88,14 @@ export class CourseRepository{
             throw(error);
         }
     }
+    async getPublishedCourses(){
+        try {
+            const courses=await Course.find({isPublished:true}).populate({path:"creator",select:"name photoUrl"});
+            return courses;
+        } catch (error) {
+            console.log("something went wrong in repository while deleting lecture from course");
+            throw(error);
+        }
+    }
 }
 

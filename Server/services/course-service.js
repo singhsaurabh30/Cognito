@@ -144,4 +144,13 @@ export class CourseService {
       throw error;
     }
   }
+  async getPublishedCourses(){
+    try {
+      const courses=await this.courseRepository.getPublishedCourses();
+      return courses;
+    } catch (error) {
+      console.log("something went wrong in Course service while getting publish courses");
+      throw error;
+    }
+  }
 }
