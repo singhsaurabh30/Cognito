@@ -19,11 +19,6 @@ const handleFilterChange=(categories,sortPrice)=>{
 }
 const navigate = useNavigate();
 const {data,isLoading,isError,error}=useGetSearchedCoursesQuery({query,categories:selectedCategories,sortByPrice});
-useEffect(() => {
-    if (isError && error?.status === 401) {
-        navigate("/login");  // Redirect to login page
-    }
-}, [isError, error]);
 if(isLoading)return <h1>Searching...</h1>
 console.log(data);
 let isEmpty=isLoading||data?.courses?.length===0;

@@ -62,15 +62,16 @@ export const CourseProgress = () => {
   const inCompleteMarkHandler=async()=>{
     await markAsInCompleted(courseId);
   }
-  console.log(data);
 
   return (
     <div className="max-w-7xl mx-auto p-4 mt-20">
       {/* Display course name  */}
       <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">{courseDetails.courseTitle}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{courseDetails.courseTitle}</h1>
         <Button onClick={completed ? inCompleteMarkHandler : completeMarkHandler}
-          variant={completed ? "outline" : "default"}>
+          variant={completed ? "outline" : "default"} 
+          className="bg-blue-600 text-white dark:bg-blue-700 hover:bg-blue-500 dark:hover:bg-blue-600"
+        >
           {completed ? (
             <div className="flex items-center">
               <CheckCircle className="h-4 w-4 mr-2" /> <span>Completed</span>{" "}
@@ -97,28 +98,24 @@ export const CourseProgress = () => {
             />
           </div>
           {/* Display current watching lecture title */}
-          <div className="mt-2 ">
-            <h3 className="font-medium text-lg">{`Lecture ${
+          <div className="mt-2">
+            <h3 className="font-medium text-lg text-gray-800 dark:text-white">{`Lecture ${
               courseDetails.lectures.findIndex(
                 (lec) => lec._id === (currentLecture?._id || initialLecture._id)
               ) + 1
-            } : ${
-              currentLecture?.lectureTitle || initialLecture.lectureTitle
-            }`}</h3>
+            } : ${currentLecture?.lectureTitle || initialLecture.lectureTitle}`}</h3>
           </div>
         </div>
         {/* Lecture Sidebar  */}
-        <div className="flex flex-col w-full md:w-2/5 border-t md:border-t-0 md:border-l border-gray-200 md:pl-4 pt-4 md:pt-0">
-          <h2 className="font-semibold text-xl mb-4">Course Lecture</h2>
+        <div className="flex flex-col w-full md:w-2/5 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 md:pl-4 pt-4 md:pt-0">
+          <h2 className="font-semibold text-xl mb-4 text-gray-900 dark:text-white">Course Lecture</h2>
           <div className="flex-1 overflow-y-auto">
             {courseDetails.lectures.map((lecture, index) => (
               <Card
                 key={lecture._id}
-                className={`mb-3 hover:cursor-pointer transition transform ${
-                  lecture._id === currentLecture?._id
-                    ? "bg-gray-200 dark:dark:bg-gray-800"
-                    : ""
-                } `}
+                className={`mb-3 hover:cursor-pointer transition transform ${lecture._id === currentLecture?._id
+                    ? "bg-gray-200 dark:bg-gray-800"
+                    : ""}`}
                 onClick={() => handleSelectLecture(lecture)}
               >
                 <CardContent className="flex items-center justify-between p-4">
@@ -129,7 +126,7 @@ export const CourseProgress = () => {
                       <CirclePlay size={24} className="text-gray-500 mr-2" />
                     )}
                     <div>
-                      <CardTitle className="text-lg font-medium">
+                      <CardTitle className="text-lg font-medium text-gray-800 dark:text-white">
                         {lecture.lectureTitle}
                       </CardTitle>
                     </div>
@@ -137,7 +134,7 @@ export const CourseProgress = () => {
                   {isLectureComplete(lecture._id) && (
                     <Badge
                       variant={"outline"}
-                      className="bg-green-200 text-green-600"
+                      className="bg-green-200 text-green-600 dark:bg-green-700 dark:text-green-300"
                     >
                       Completed
                     </Badge>
