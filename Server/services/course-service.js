@@ -53,7 +53,7 @@ export class CourseService {
       const course = await this.courseRepository.getCourseById(id);
       return course;
     } catch (error) {
-      console.log("something went wrong in Course service");
+      console.log("something went wrong in Course service while getting course by id");
       throw error;
     }
   }
@@ -68,7 +68,7 @@ export class CourseService {
       await course.save();
       return lecture;
     } catch (error) {
-      console.log("something went wrong in Course service");
+      console.log("something went wrong in Course service while creating lecture");
       throw error;
     }
   }
@@ -77,7 +77,7 @@ export class CourseService {
       const course = await this.courseRepository.getCourseLecture(id);
       return course;
     } catch (error) {
-      console.log("something went wrong in Course service");
+      console.log("something went wrong in Course service while getting course lecture");
       throw error;
     }
   }
@@ -87,7 +87,7 @@ export class CourseService {
         data.lectureId
       );
       console.log(data);
-      
+
       if (!lecture) return lecture;
       if (data.lectureTitle) lecture.lectureTitle = data.lectureTitle;
       if (data.videoInfo?.videoUrl) lecture.videoUrl = data.videoInfo.videoUrl;
@@ -103,53 +103,82 @@ export class CourseService {
       }
       return lecture;
     } catch (error) {
-      console.log("something went wrong in Course service");
+      console.log("something went wrong in Course service while editing courses");
       throw error;
     }
   }
-  async removeLecture(id){
+  async removeLecture(id) {
     try {
-      const lecture=await this.courseRepository.deleteLectureById(id);
-      if(!lecture) return lecture;
+      const lecture = await this.courseRepository.deleteLectureById(id);
+      if (!lecture) return lecture;
       //delete lecture from cloudinary
-      if(lecture.publicId){
+      if (lecture.publicId) {
         await deleteMediaFromCloudinary(lecture.publicId);
       }
       await this.courseRepository.removeLectureFromAssociatedCourse(id);
       return lecture;
-
     } catch (error) {
-      console.log("something went wrong in Course service while removing lecture");
+      console.log(
+        "something went wrong in Course service while removing lecture"
+      );
       throw error;
     }
   }
-  async getLectureById(id){
+  async getLectureById(id) {
     try {
-      const lecture=await this.courseRepository.getLectureById(id);
+      const lecture = await this.courseRepository.getLectureById(id);
       return lecture;
     } catch (error) {
-      console.log("something went wrong in Course service while getting lecture");
+      console.log(
+        "something went wrong in Course service while getting lecture"
+      );
       throw error;
     }
   }
-  async toggleTheCourseStatus(id,publish){
+  async toggleTheCourseStatus(id, publish) {
     try {
-      const course=await this.courseRepository.getCourseById(id);
-      if(!course) return course;
+      const course = await this.courseRepository.getCourseById(id);
+      if (!course) return course;
       course.isPublished = publish === "true";
       await course.save();
       return course;
     } catch (error) {
-      console.log("something went wrong in Course service while toggling course status");
+      console.log(
+        "something went wrong in Course service while toggling course status"
+      );
       throw error;
     }
   }
-  async getPublishedCourses(){
+  async getPublishedCourses() {
     try {
-      const courses=await this.courseRepository.getPublishedCourses();
+      const courses = await this.courseRepository.getPublishedCourses();
       return courses;
     } catch (error) {
-      console.log("something went wrong in Course service while getting publish courses");
+      console.log(
+        "something went wrong in Course service while getting publish courses"
+      );
+      throw error;
+    }
+  }
+  async getCourseDetails(id) {
+    try {
+      const course=await this.courseRepository.getCourseDetailWithCreatorAndLectures(id);
+      return course;
+    } catch (error) {
+      console.log(
+        "something went wrong in Course service while getting course details"
+      );
+      throw error;
+    }
+  }
+  async findCourseWithFilterAndSort({searchingCriterias,sortOptions}){
+    try {
+      const courses=await this.courseRepository.findCourseWithFilterAndSort({searchingCriterias,sortOptions});
+      return courses
+    } catch (error) {
+      console.log(
+        "something went wrong in Course service while searching courses"
+      );
       throw error;
     }
   }

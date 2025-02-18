@@ -35,17 +35,17 @@ export const createCourse = async (req, res) => {
     });
   }
 };
-export const getPublishedCourse=async (req,res)=>{
+export const getPublishedCourse = async (req, res) => {
   try {
-    const courses=await courseService.getPublishedCourses();
-    if(!courses){
+    const courses = await courseService.getPublishedCourses();
+    if (!courses) {
       return res.status(404).json({
-        message:"Course not found"
-      })
+        message: "Course not found",
+      });
     }
     return res.status(200).json({
       courses,
-    })
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -54,7 +54,7 @@ export const getPublishedCourse=async (req,res)=>{
       err: error,
     });
   }
-}
+};
 export const getCreatorCourse = async (req, res) => {
   try {
     const userId = req.id;
@@ -109,6 +109,8 @@ export const editCourse = async (req, res) => {
 };
 export const getCourseById = async (req, res) => {
   try {
+    
+    
     const course = await courseService.getCourseById(req.params.courseId);
     if (!course) {
       return res.status(404).json({
@@ -267,6 +269,52 @@ export const toggleTheCourseStatus = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "failed to Publish or unpublish the course",
+      err: error,
+    });
+  }
+};
+
+//search functionality
+export const searchCourses = async (req, res) => {
+  try {
+    console.log('jjj');
+    
+    const { query = "", categories = [], sortByPrice = "" } = req.query;
+    const searchingCriterias = {
+      isPublished: true,
+      $or: [
+        { courseTitle: { $regex: query, $options: "i" } }, //regex->if any substring matches from courseTitle,options->caseInsensitive
+        { subTitle: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ],
+    };
+    //check if categories are applied
+
+    if (categories.length > 0) {
+      searchingCriterias.category = { $in: categories };
+    }
+    // define sorting order
+    const sortOptions = {};
+    if (sortByPrice === "low") {
+      sortOptions.coursePrice = -1; //sort by price in ascending
+    } else if (sortByPrice === "high") {
+      sortOptions.coursePrice = 1; // descending
+    }
+    console.log(searchingCriterias,sortOptions);
+    
+    const courses = await courseService.findCourseWithFilterAndSort({
+      searchingCriterias,
+      sortOptions,
+    });
+    return res.status(200).json({
+      success: true,
+      courses: courses || [],
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "failed to search courses",
       err: error,
     });
   }

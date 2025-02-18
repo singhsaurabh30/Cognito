@@ -97,5 +97,23 @@ export class CourseRepository{
             throw(error);
         }
     }
+    async getCourseDetailWithCreatorAndLectures(id){
+        try {
+            const courses=await Course.findById(id).populate({path:"creator"}).populate({path:"lectures"});
+            return courses;
+        } catch (error) {
+            console.log("something went wrong in repository while course details");
+            throw(error);
+        }
+    }
+    async findCourseWithFilterAndSort({searchingCriterias,sortOptions}){
+        try {
+            let courses = await Course.find(searchingCriterias).populate({path:"creator", select:"name photoUrl"}).sort(sortOptions);
+        return courses;
+        } catch (error) {
+            console.log("something went wrong in repository while searching courses");
+            throw(error);
+        }
+    }
 }
 

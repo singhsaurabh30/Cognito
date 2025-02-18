@@ -1,10 +1,15 @@
-import { STRIPE_SECRET_KEY, WEBHOOK_ENDPOINT_SECRET } from "../config/serverConfig.js";
+import {
+  STRIPE_SECRET_KEY,
+  WEBHOOK_ENDPOINT_SECRET,
+} from "../config/serverConfig.js";
 import { Course } from "../models/course.js";
 import { CoursePurchase } from "../models/coursePurchase.js";
 import { Lecture } from "../models/lecture.js";
 import Stripe from "stripe";
 import { getCourseById } from "./course-controller.js";
 import { User } from "../models/user.js";
+import { CourseService } from "../services/course-service.js";
+const courseService = new CourseService();
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 export const createCheckOutSession = async (req, res) => {
   try {
@@ -68,7 +73,7 @@ export const stripeWebhook = async (req, res) => {
 
   try {
     const payloadString = JSON.stringify(req.body, null, 2);
-    const secret =WEBHOOK_ENDPOINT_SECRET;
+    const secret = WEBHOOK_ENDPOINT_SECRET;
 
     const header = stripe.webhooks.generateTestHeaderString({
       payload: payloadString,
@@ -130,4 +135,42 @@ export const stripeWebhook = async (req, res) => {
     }
   }
   res.status(200).send();
+};
+export const getCourseDetailWithPurchaseStatus = async (req,res) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.id;
+    const course = await courseService.getCourseDetails(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "course not found!" });
+    }
+    const purchased = await CoursePurchase.findOne({ userId, courseId });
+    console.log(course,purchased);
+    
+    return res.status(200).json({
+      course,
+      purchased: purchased?purchased.status==="completed":false,
+    });
+  } catch (error) {
+    console.error("Error handling event:", error);
+    return res.status(500).json({ message: "Failed to get course detail" });
+  }
+};
+export const getAllPurchasedCourse = async (req, res) => {
+  try {
+    const purchasedCourse = await CoursePurchase.find({
+      status: "completed",
+    }).populate("courseId");
+    if (!purchasedCourse) {
+      return res.status(404).json({
+        purchasedCourse: [],
+      });
+    }
+    return res.status(200).json({
+      purchasedCourse,
+    });
+  } catch (error) {
+    console.error("Error handling event:", error);
+    return res.status(500).json({ message: "Failed to get purchased courses" });
+  }
 };

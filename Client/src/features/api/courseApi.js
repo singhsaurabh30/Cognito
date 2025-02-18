@@ -4,7 +4,7 @@ const COURSE_API = "http://localhost:3000/api/v1/course";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
-  tagTypes: ["Refetch_Creator_Course","Refetch_Lecture"],
+  tagTypes: ["Refetch_Creator_Course", "Refetch_Lecture"],
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
@@ -39,19 +39,19 @@ export const courseApi = createApi({
         method: "GET",
       }),
     }),
-    createLecture:builder.mutation({
-      query:({lectureTitle,courseId})=>({
-        url:`/${courseId}/lecture`,
-        method:"POST",
-        body:{lectureTitle}
+    createLecture: builder.mutation({
+      query: ({ lectureTitle, courseId }) => ({
+        url: `/${courseId}/lecture`,
+        method: "POST",
+        body: { lectureTitle },
       }),
     }),
-    getCourseLecture:builder.query({
-      query:(courseId)=>({
-        url:`/${courseId}/lecture`,
-        method:"GET",
+    getCourseLecture: builder.query({
+      query: (courseId) => ({
+        url: `/${courseId}/lecture`,
+        method: "GET",
       }),
-      providesTags:["Refetch_Lecture"],
+      providesTags: ["Refetch_Lecture"],
     }),
     editLecture: builder.mutation({
       query: ({
@@ -65,14 +65,14 @@ export const courseApi = createApi({
         method: "POST",
         body: { lectureTitle, videoInfo, isPreviewFree },
       }),
-      invalidatesTags:["Refetch_Lecture"],
+      invalidatesTags: ["Refetch_Lecture"],
     }),
     removeLecture: builder.mutation({
       query: (lectureId) => ({
         url: `/lecture/${lectureId}`,
         method: "DELETE",
       }),
-      invalidatesTags:["Refetch_Lecture"],
+      invalidatesTags: ["Refetch_Lecture"],
     }),
     getLectureById: builder.query({
       query: (lectureId) => ({
@@ -80,11 +80,40 @@ export const courseApi = createApi({
         method: "GET",
       }),
     }),
-    toggleCourse:builder.mutation({
-      query:({courseId,publish})=>({
+    toggleCourse: builder.mutation({
+      query: ({ courseId, publish }) => ({
         url: `/${courseId}?publish=${publish}`,
-        method:"PATCH"
+        method: "PATCH",
       }),
+    }),
+    getPublishedCourses: builder.query({
+      query: () => ({
+        url: `/published-courses`,
+        method: "GET",
+      }),
+    }),
+    getSearchedCourses: builder.query({
+      query: ({ query, categories, sortByPrice }) => {
+        // add query to searchUrl
+        let searchUrl = `/search?query=${encodeURIComponent(query)}`;
+
+        // append cateogry
+        if (categories && categories.length > 0) {
+          const categoriesString = categories.map(encodeURIComponent).join(",");
+          searchUrl += `&categories=${categoriesString}`;
+        }
+
+        // Append sortByPrice is available
+        if (sortByPrice) {
+          searchUrl += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
+        }
+        console.log(searchUrl);
+        
+        return {
+          url: searchUrl,
+          method: "GET",
+        };
+      },
     }),
   }),
 });
@@ -98,5 +127,7 @@ export const {
   useEditLectureMutation,
   useRemoveLectureMutation,
   useGetLectureByIdQuery,
-  useToggleCourseMutation
+  useToggleCourseMutation,
+  useGetPublishedCoursesQuery,
+  useGetSearchedCoursesQuery
 } = courseApi;

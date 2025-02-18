@@ -62,7 +62,7 @@ export const Navbar = () => {
           <School size={"30"} />
           <Link to="/">
           <h1 className="hidden md:block font-extrabold text-2xl">
-            E-Learning
+          UpSkillify
           </h1></Link>
         </div>
         {/*User Icon and Dark mode */}
@@ -94,7 +94,7 @@ export const Navbar = () => {
                   user.role=="instructor"&&(
                     <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Dashboard</DropdownMenuItem></>
+                    <DropdownMenuItem><Link to='/admin/dashboard'>Dashboard</Link></DropdownMenuItem></>
                   )
                 }
               </DropdownMenuContent>

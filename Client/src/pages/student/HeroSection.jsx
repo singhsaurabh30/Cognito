@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate=useNavigate();
   const searchHandler = (e) => {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
       navigate(`/course/search?query=${searchQuery}`);
     }
+    //alert(searchQuery);
     setSearchQuery("");
   };
 

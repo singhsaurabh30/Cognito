@@ -25,7 +25,11 @@ export class UserRepository{
     }
     async getByUserId(id){
         try {
-            const userData=await User.findById(id).select("-password");
+            const userData=await User.findById(id).populate({path: "enrolledCourses",   // First populate enrolledCourses
+                populate: {
+                    path: "creator",       // Then populate creator inside enrolledCourses
+                    select: "name photoUrl"  // Select specific fields from creator
+                }}).select("-password");
             
             return userData;
         } catch (error) {
