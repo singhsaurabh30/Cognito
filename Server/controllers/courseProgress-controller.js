@@ -20,7 +20,6 @@ export const getCourseProgress = async (req, res) => {
         .status(200)
         .json({ courseDetails, progress: [], completed: false });
     }
-    console.log(courseProgress);
 
     return res.status(200).json({
       courseDetails,

@@ -145,7 +145,6 @@ export const getCourseDetailWithPurchaseStatus = async (req,res) => {
       return res.status(404).json({ message: "course not found!" });
     }
     const purchased = await CoursePurchase.findOne({ userId, courseId });
-    console.log(course,purchased);
     
     return res.status(200).json({
       course,

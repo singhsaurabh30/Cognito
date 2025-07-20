@@ -62,7 +62,7 @@ export const Navbar = () => {
           <School size={"30"} />
           <Link to="/">
           <h1 className="hidden md:block font-extrabold text-2xl">
-          UpSkillify
+          Cognito
           </h1></Link>
         </div>
         {/*User Icon and Dark mode */}

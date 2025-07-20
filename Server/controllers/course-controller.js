@@ -19,7 +19,6 @@ export const createCourse = async (req, res) => {
       category,
       creator: req.id,
     });
-    console.log("here");
     return res.status(201).json({
       success: true,
       message: "course created",
@@ -133,7 +132,6 @@ export const createLecture = async (req, res) => {
   try {
     const { lectureTitle } = req.body;
     const { courseId } = req.params;
-    console.log(lectureTitle, courseId);
     if (!courseId) {
       return res.status(404).json({
         message: "Course not found!",
@@ -277,8 +275,6 @@ export const toggleTheCourseStatus = async (req, res) => {
 //search functionality
 export const searchCourses = async (req, res) => {
   try {
-    console.log('jjj');
-    
     const { query = "", categories = [], sortByPrice = "" } = req.query;
     const searchingCriterias = {
       isPublished: true,
@@ -300,7 +296,6 @@ export const searchCourses = async (req, res) => {
     } else if (sortByPrice === "high") {
       sortOptions.coursePrice = 1; // descending
     }
-    console.log(searchingCriterias,sortOptions);
     
     const courses = await courseService.findCourseWithFilterAndSort({
       searchingCriterias,
