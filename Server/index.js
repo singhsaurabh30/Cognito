@@ -4,6 +4,9 @@ import { connect } from "./config/database.js";
 import router from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
+const __dirname=path.resolve();
+
 const app=express();
 
 app.use(express.json());
@@ -13,8 +16,14 @@ app.use(cors({
     credentials:true
 }));
 
+
+
 connect();
 app.use('/api',router);
+app.use(express.static(path.join(__dirname,"/Client/dist")));
+app.get('*',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,"Client","dist","index.html"));
+})
 const port=PORT||3000;
 app.listen(port,()=>{
     console.log(`server started at port  ${PORT}`);

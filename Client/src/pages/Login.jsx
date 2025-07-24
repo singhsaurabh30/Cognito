@@ -57,7 +57,6 @@ const Login = () => {
   };
   const onClickHandler = async (type) => {
     const inputValue = type === "signup" ? signupValue : loginValue;
-    //console.log(inputValue);
     const action=type==="signup"?registerUser:loginUser;
     await action(inputValue);
   };

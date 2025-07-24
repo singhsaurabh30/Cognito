@@ -105,6 +105,34 @@ export const CourseProgress = () => {
               ) + 1
             } : ${currentLecture?.lectureTitle || initialLecture.lectureTitle}`}</h3>
           </div>
+          {(currentLecture?.pdfUrl || initialLecture?.pdfUrl) && (
+  <div className="mt-6 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md overflow-hidden">
+    <div className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border-b border-gray-300 dark:border-gray-700">
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+        Lecture Notes (PDF)
+      </h2>
+    </div>
+    <iframe
+      src={currentLecture?.pdfUrl || initialLecture?.pdfUrl}
+      title="Lecture PDF Notes"
+      width="100%"
+      height="600px"
+      className="w-full bg-white dark:bg-gray-900"
+      style={{ border: "none" }}
+    >
+      Your browser does not support PDFs.{" "}
+      <a
+        href={currentLecture?.pdfUrl || initialLecture?.pdfUrl}
+        className="text-blue-600 underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Click here to download the file.
+      </a>
+    </iframe>
+  </div>
+)}
+
         </div>
         {/* Lecture Sidebar  */}
         <div className="flex flex-col w-full md:w-2/5 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 md:pl-4 pt-4 md:pt-0">

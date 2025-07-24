@@ -179,7 +179,7 @@ export const getCourseLecture = async (req, res) => {
 };
 export const editLecture = async (req, res) => {
   try {
-    const { lectureTitle, videoInfo, isPreviewFree } = req.body;
+    const { lectureTitle, videoInfo, isPreviewFree,pdfInfo } = req.body;
     const { courseId, lectureId } = req.params;
     const lecture = await courseService.editLecture({
       lectureTitle,
@@ -187,6 +187,7 @@ export const editLecture = async (req, res) => {
       isPreviewFree,
       courseId,
       lectureId,
+      pdfInfo
     });
     if (!lecture) {
       return res.status(404).json({

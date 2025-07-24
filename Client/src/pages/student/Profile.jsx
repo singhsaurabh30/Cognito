@@ -60,7 +60,6 @@ const Profile = () => {
     }
   }, [isSuccess, isError]);
   const user = data && data.user;
-console.log(user);
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">

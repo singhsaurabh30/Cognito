@@ -8,6 +8,8 @@ const lectureSchema = new mongoose.Schema(
     videoUrl: { type: String },
     publicId: { type: String },
     isPreviewFree: { type: Boolean },
+    pdfUrl: { type: String },          // URL of the uploaded PDF (Cloudinary)
+    pdfPublicId: { type: String },     // Cloudinary public ID (optional, useful for deletion)
   },
   { timestamps: true }
 );

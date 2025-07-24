@@ -5,7 +5,6 @@ import { useGetPublishedCoursesQuery } from "@/features/api/courseApi";
  
 const Courses = () => {
   const {data,isLoading,isError}=useGetPublishedCoursesQuery();
-console.log(data);
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">
       <div className="max-w-7xl mx-auto p-6">

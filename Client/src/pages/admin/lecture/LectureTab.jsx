@@ -28,6 +28,7 @@ const LectureTab = () => {
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
+  const [pdfInfo, setPdfInfo] = useState(null);
   const MEDIA_URL = "http://localhost:3000/api/v1/media";
   const [editLecture, { data, isLoading, error, isSuccess }] =
     useEditLectureMutation();
@@ -41,8 +42,28 @@ const LectureTab = () => {
   ] = useRemoveLectureMutation();
   const params = useParams();
   const { courseId, lectureId } = params;
-  const {data:lectureData}=useGetLectureByIdQuery(lectureId);
-  const lecture=lectureData?.lecture;
+  const { data: lectureData } = useGetLectureByIdQuery(lectureId);
+  const lecture = lectureData?.lecture;
+  const pdfChangeHandle = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await axios.post(`${MEDIA_URL}/upload-vedio`, formData);
+        if (res.data.success) {
+          setPdfInfo({
+            pdfUrl: res.data.data.url,
+            pdfPublicId: res.data.data.public_id,
+          });
+          toast.success(res.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("pdf upload failed");
+      }
+    }
+  };
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -56,7 +77,6 @@ const LectureTab = () => {
           },
         });
         if (res.data.success) {
-          console.log(res);
           setUploadVedioInfo({
             videoUrl: res.data.data.url,
             publicId: res.data.data.public_id,
@@ -73,13 +93,13 @@ const LectureTab = () => {
     }
   };
   const editLectureHandler = async () => {
-    console.log(lectureTitle, uploadVedioInfo, isFree);
     await editLecture({
       lectureTitle,
       videoInfo: uploadVedioInfo,
       isPreviewFree: isFree,
       courseId,
       lectureId,
+      pdfInfo,
     });
   };
   const removeLectureHandler = async () => {
@@ -92,23 +112,24 @@ const LectureTab = () => {
     if (error) {
       toast.error(error?.data.message);
     }
-    
   }, [isSuccess, error]);
-  useEffect(()=>{
-    if(removeLectureSuccess){
+  useEffect(() => {
+    if (removeLectureSuccess) {
       toast.success(removeLectureData.message);
     }
-    if(removeLectureError){
+    if (removeLectureError) {
       toast.error(removeLectureError.data.message);
     }
-  },[removeLectureSuccess,removeLectureError])
-  useEffect(()=>{
-    if(lecture){
+  }, [removeLectureSuccess, removeLectureError]);
+  useEffect(() => {
+    if (lecture) {
       setLectureTitle(lecture.lectureTitle);
       setIsFree(lecture.isPreviewFree);
-      setUploadVedioInfo(lecture.videoInfo)
+      setUploadVedioInfo(lecture.videoInfo);
+      setPdfInfo(lecture.pdfInfo); // <-- add this
+      setBtnDisable(false);
     }
-  },[lecture])
+  }, [lecture]);
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -160,15 +181,37 @@ const LectureTab = () => {
             <p>{uploadProgress}% uploaded</p>
           </div>
         )}
+        <div className="my-5">
+          <Label>
+            Notes <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            type="file"
+            accept="application/pdf"
+            onChange={pdfChangeHandle}
+            className="w-fit"
+          />
+        </div>
+        {pdfInfo?.pdfUrl && (
+          <div className="mt-4">
+            <iframe
+              src={pdfInfo.pdfUrl}
+              width="100%"
+              height="600px"
+              title="PDF Viewer"
+            ></iframe>
+          </div>
+        )}
         <div className="mt-4">
-        <Button disabled={isLoading} onClick={editLectureHandler}>
-              {
-                isLoading ? <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+          <Button disabled={isLoading} onClick={editLectureHandler}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
-                </> : "Update Lecture"
-              }
-            
+              </>
+            ) : (
+              "Update Lecture"
+            )}
           </Button>
         </div>
       </CardContent>

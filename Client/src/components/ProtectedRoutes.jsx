@@ -3,7 +3,6 @@ import { Navigate } from "react-router-dom";
 
 export const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useSelector((store) => {
-    //console.log(store);
     return store.auth;
   });
   if (!isAuthenticated) {
@@ -13,7 +12,6 @@ export const ProtectedRoute = ({ children }) => {
 };
 export const AuthenticatedUser=({children})=>{
     const { isAuthenticated } = useSelector((store) => {
-        //console.log(store);
         return store.auth;
       });
       if(isAuthenticated){
@@ -23,7 +21,6 @@ export const AuthenticatedUser=({children})=>{
 }
 export const AdminRoutes=({children})=>{
     const { user,isAuthenticated } = useSelector((store) => {
-        //console.log(store);
         return store.auth;
       });
       if (!isAuthenticated) {

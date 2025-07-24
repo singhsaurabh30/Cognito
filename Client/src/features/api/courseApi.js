@@ -60,10 +60,11 @@ export const courseApi = createApi({
         isPreviewFree,
         courseId,
         lectureId,
+        pdfInfo
       }) => ({
         url: `/${courseId}/lecture/${lectureId}`,
         method: "POST",
-        body: { lectureTitle, videoInfo, isPreviewFree },
+        body: { lectureTitle, videoInfo, isPreviewFree,pdfInfo },
       }),
       invalidatesTags: ["Refetch_Lecture"],
     }),
@@ -107,7 +108,6 @@ export const courseApi = createApi({
         if (sortByPrice) {
           searchUrl += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
         }
-        console.log(searchUrl);
         
         return {
           url: searchUrl,

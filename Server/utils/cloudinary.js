@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { API_KEY, API_SECRET, CLOUD_NAME } from '../config/serverConfig.js';
-
+import path from 'path';
 
 
 
@@ -11,8 +11,10 @@ cloudinary.config({
 });
 export const uploadMedia=async(file)=>{
     try {
+        const ext = path.extname(file).toLowerCase(); // e.g., ".pdf"
+    const resourceType = ext === ".pdf" ? "raw" : "auto";
         const uploadResponse=await cloudinary.uploader.upload(file,{
-            resource_type:"auto"
+            resource_type:resourceType
         })
         return uploadResponse;
     } catch (error) {

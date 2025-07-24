@@ -20,7 +20,6 @@ const handleFilterChange=(categories,sortPrice)=>{
 const navigate = useNavigate();
 const {data,isLoading,isError,error}=useGetSearchedCoursesQuery({query,categories:selectedCategories,sortByPrice});
 if(isLoading)return <h1>Searching...</h1>
-console.log(data);
 let isEmpty=isLoading||data?.courses?.length===0;
 if(!isLoading && !data) isEmpty=true;
   return (
