@@ -20,9 +20,9 @@ app.use(cors({
 
 connect();
 app.use('/api',router);
-app.use(express.static(path.join(__dirname,"/Client/dist")));
+app.use(express.static(path.join(__dirname,"/client/dist")));
 app.get('*',(req,res)=>{
-    res.sendFile(path.resolve(__dirname,"Client","dist","index.html"));
+    res.sendFile(path.resolve(__dirname,"client","dist","index.html"));
 })
 const port=PORT||3000;
 app.listen(port,()=>{
