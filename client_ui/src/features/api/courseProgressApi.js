@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const PROGRESS_URL = "http://localhost:3000/api/v1/progress";
+const PROGRESS_URL = "https://cognito-zots.onrender.com/api/v1/progress";
 export const courseProgressApi = createApi({
   reducerPath: "courseProgressApi",
   baseQuery: fetchBaseQuery({
