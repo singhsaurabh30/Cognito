@@ -1,4 +1,4 @@
-### Live Link: https://cognito-zots.onrender.com/
+Live Link: https://cognito-zots.onrender.com/
 
 # Cognito
 
@@ -13,8 +13,8 @@
 -  Track lecture/course completion
 -  Resume from last watched lecture
 -  View course progress
--  Instructor dashboard (if implemented)
--  Light/Dark mode (via Chakra UI)
+-  Instructor dashboard
+-  Light/Dark mode
 -  Fully responsive UI
 
 ---
