@@ -117,24 +117,39 @@ export const CourseProgress = () => {
                   Lecture Notes (PDF)
                 </h2>
               </div>
-              <iframe
-                src={(currentLecture?.pdfUrl || initialLecture?.pdfUrl)?.replace('http://', 'https://')}
-                title="Lecture PDF Notes"
-                width="100%"
-                height="600px"
-                className="w-full bg-white dark:bg-gray-900"
-                style={{ border: "none" }}
-              >
-                Your browser does not support PDFs.{" "}
-                <a
-                  src={(currentLecture?.pdfUrl || initialLecture?.pdfUrl)?.replace('http://', 'https://')}
-                  className="text-blue-600 underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Click here to download the file.
-                </a>
-              </iframe>
+              {(currentLecture?.pdfUrl || initialLecture?.pdfUrl) && (
+                <div className="mt-6 rounded-xl overflow-hidden shadow-md border border-gray-200 dark:border-gray-700">
+                  <div className="bg-gray-100 dark:bg-gray-800 px-5 py-3 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                      Lecture Notes (PDF)
+                    </h2>
+                  </div>
+                  <div className="w-full h-[75vh] bg-white dark:bg-gray-900">
+                    <iframe
+                      src={(
+                        currentLecture?.pdfUrl || initialLecture?.pdfUrl
+                      )?.replace("http://", "https://")}
+                      title="Lecture PDF Notes"
+                      width="100%"
+                      height="100%"
+                      className="w-full h-full"
+                      style={{ border: "none" }}
+                    >
+                      Your browser does not support PDFs.{" "}
+                      <a
+                        href={(
+                          currentLecture?.pdfUrl || initialLecture?.pdfUrl
+                        )?.replace("http://", "https://")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        Click here to view the file.
+                      </a>
+                    </iframe>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
