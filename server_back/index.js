@@ -18,14 +18,15 @@ app.use(cors({
 
 
 
-connect();
+
 app.use('/api',router);
 app.use(express.static(path.join(__dirname,"/client_ui/dist")));
 app.get('*',(req,res)=>{
     res.sendFile(path.resolve(__dirname,"client_ui","dist","index.html"));
 })
 const port=PORT||3000;
-app.listen(port,()=>{
+app.listen(port,async()=>{
     console.log(`server started at port  ${PORT}`);
+    await connect();
 })
 

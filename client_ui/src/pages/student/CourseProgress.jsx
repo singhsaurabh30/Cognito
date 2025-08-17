@@ -110,13 +110,7 @@ export const CourseProgress = () => {
               currentLecture?.lectureTitle || initialLecture.lectureTitle
             }`}</h3>
           </div>
-          {(currentLecture?.pdfUrl || initialLecture?.pdfUrl) && (
-            <div className="mt-6 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md overflow-hidden">
-              <div className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border-b border-gray-300 dark:border-gray-700">
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                  Lecture Notes (PDF)
-                </h2>
-              </div>
+          
               {(currentLecture?.pdfUrl || initialLecture?.pdfUrl) && (
                 <div className="mt-6 rounded-xl overflow-hidden shadow-md border border-gray-200 dark:border-gray-700">
                   <div className="bg-gray-100 dark:bg-gray-800 px-5 py-3 border-b border-gray-200 dark:border-gray-700">

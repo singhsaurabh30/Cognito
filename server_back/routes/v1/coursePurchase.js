@@ -4,7 +4,7 @@ import { createCheckOutSession, getAllPurchasedCourse, getCourseDetailWithPurcha
 const router=express();
 
 router.post('/checkout/create-checkout-session',isAuthenticated,createCheckOutSession);
-router.post('/webhook',express.raw({type:"application/json"}), stripeWebhook);
+router.post('/webhook',express.raw({type:"application/json"}),stripeWebhook);
 router.route("/course/:courseId/detail-with-status").get(isAuthenticated,getCourseDetailWithPurchaseStatus);
 router.route("/").get(isAuthenticated,getAllPurchasedCourse);
 

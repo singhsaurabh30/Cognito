@@ -85,7 +85,7 @@ export const stripeWebhook = async (req, res) => {
     console.error("Webhook error:", error.message);
     return res.status(400).send(`Webhook error: ${error.message}`);
   }
-
+  
   // Handle the checkout session completed event
   if (event.type === "checkout.session.completed") {
     console.log("check session complete is called");
