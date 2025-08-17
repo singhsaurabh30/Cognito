@@ -16,17 +16,14 @@ export const CourseProgress = () => {
   const params = useParams();
   const [currentLecture, setCurrentLecture] = useState(null);
   const { courseId } = params;
-  const { data, isLoading, isError, refetch } =
-    useGetCourseProgressQuery(courseId);
-  const [updateLectureProgress, {}] = useUpdateLectureProgressMutation();
-  const [
-    markAsCompleted,
-    { data: completedData, isSuccess: completedSuccess },
-  ] = useCompleteCourseMutation();
-  const [
-    markAsInCompleted,
-    { data: inCompletedData, isSuccess: inCompletedSuccess },
-  ] = useInCompleteCourseMutation();
+
+  const { data, isLoading, isError, refetch } = useGetCourseProgressQuery(courseId);
+  const [updateLectureProgress] = useUpdateLectureProgressMutation();
+  const [markAsCompleted, { data: completedData, isSuccess: completedSuccess }] =
+    useCompleteCourseMutation();
+  const [markAsInCompleted, { data: inCompletedData, isSuccess: inCompletedSuccess }] =
+    useInCompleteCourseMutation();
+
   useEffect(() => {
     if (completedSuccess) {
       refetch();
@@ -36,36 +33,42 @@ export const CourseProgress = () => {
       refetch();
       toast.success(inCompletedData.message);
     }
-  }, [completedSuccess, inCompletedSuccess]);
+  }, [completedSuccess, inCompletedSuccess, completedData, inCompletedData, refetch]);
+
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Failed to load course progress</h1>;
 
   const { courseDetails, progress, completed } = data;
   const initialLecture =
     currentLecture || (courseDetails.lectures && courseDetails.lectures[0]);
+
   const isLectureComplete = (lectureId) => {
     return progress.some(
       (currLecture) => currLecture.lectureId === lectureId && currLecture.viewed
     );
   };
+
   const updateLectureProgressHandler = async (lectureId) => {
     await updateLectureProgress({ courseId, lectureId });
     refetch();
   };
+
   const handleSelectLecture = (lecture) => {
     setCurrentLecture(lecture);
     updateLectureProgressHandler(lecture._id);
   };
+
   const completeMarkHandler = async () => {
     await markAsCompleted(courseId);
   };
+
   const inCompleteMarkHandler = async () => {
     await markAsInCompleted(courseId);
   };
 
   return (
     <div className="max-w-7xl mx-auto p-4 mt-20">
-      {/* Display course name  */}
+      {/* Display course name */}
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           {courseDetails.courseTitle}
@@ -77,7 +80,7 @@ export const CourseProgress = () => {
         >
           {completed ? (
             <div className="flex items-center">
-              <CheckCircle className="h-4 w-4 mr-2" /> <span>Completed</span>{" "}
+              <CheckCircle className="h-4 w-4 mr-2" /> <span>Completed</span>
             </div>
           ) : (
             "Mark as completed"
@@ -86,8 +89,8 @@ export const CourseProgress = () => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
+        {/* Video & PDF Section */}
         <div className="flex-1 md:w-3/5 h-fit rounded-lg shadow-lg p-4">
-          {/* Video section  */}
           <div>
             <video
               src={currentLecture?.videoUrl || initialLecture.videoUrl}
@@ -100,60 +103,61 @@ export const CourseProgress = () => {
               }
             />
           </div>
-          {/* Display current watching lecture title */}
+
+          {/* Current Lecture Title */}
           <div className="mt-2">
-            <h3 className="font-medium text-lg text-gray-800 dark:text-white">{`Lecture ${
-              courseDetails.lectures.findIndex(
-                (lec) => lec._id === (currentLecture?._id || initialLecture._id)
-              ) + 1
-            } : ${
-              currentLecture?.lectureTitle || initialLecture.lectureTitle
-            }`}</h3>
+            <h3 className="font-medium text-lg text-gray-800 dark:text-white">
+              {`Lecture ${
+                courseDetails.lectures.findIndex(
+                  (lec) => lec._id === (currentLecture?._id || initialLecture._id)
+                ) + 1
+              } : ${currentLecture?.lectureTitle || initialLecture.lectureTitle}`}
+            </h3>
           </div>
-          
-              {(currentLecture?.pdfUrl || initialLecture?.pdfUrl) && (
-                <div className="mt-6 rounded-xl overflow-hidden shadow-md border border-gray-200 dark:border-gray-700">
-                  <div className="bg-gray-100 dark:bg-gray-800 px-5 py-3 border-b border-gray-200 dark:border-gray-700">
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                      Lecture Notes (PDF)
-                    </h2>
-                  </div>
-                  <div className="w-full h-[75vh] bg-white dark:bg-gray-900">
-                    <iframe
-                      src={(
-                        currentLecture?.pdfUrl || initialLecture?.pdfUrl
-                      )?.replace("http://", "https://")}
-                      title="Lecture PDF Notes"
-                      width="100%"
-                      height="100%"
-                      className="w-full h-full"
-                      style={{ border: "none" }}
-                    >
-                      Your browser does not support PDFs.{" "}
-                      <a
-                        href={(
-                          currentLecture?.pdfUrl || initialLecture?.pdfUrl
-                        )?.replace("http://", "https://")}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline"
-                      >
-                        Click here to view the file.
-                      </a>
-                    </iframe>
-                  </div>
-                </div>
-              )}
+
+          {/* PDF Notes Section */}
+          {(currentLecture?.pdfUrl || initialLecture?.pdfUrl) && (
+            <div className="mt-6 rounded-xl overflow-hidden shadow-md border border-gray-200 dark:border-gray-700">
+              <div className="bg-gray-100 dark:bg-gray-800 px-5 py-3 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                  Lecture Notes (PDF)
+                </h2>
+              </div>
+              <div className="w-full h-[75vh] bg-white dark:bg-gray-900">
+                <iframe
+                  src={(
+                    currentLecture?.pdfUrl || initialLecture?.pdfUrl
+                  )?.replace("http://", "https://")}
+                  title="Lecture PDF Notes"
+                  width="100%"
+                  height="100%"
+                  className="w-full h-full"
+                  style={{ border: "none" }}
+                >
+                  Your browser does not support PDFs.{" "}
+                  <a
+                    href={(
+                      currentLecture?.pdfUrl || initialLecture?.pdfUrl
+                    )?.replace("http://", "https://")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    Click here to view the file.
+                  </a>
+                </iframe>
+              </div>
             </div>
           )}
         </div>
-        {/* Lecture Sidebar  */}
+
+        {/* Lecture Sidebar */}
         <div className="flex flex-col w-full md:w-2/5 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 md:pl-4 pt-4 md:pt-0">
           <h2 className="font-semibold text-xl mb-4 text-gray-900 dark:text-white">
             Course Lecture
           </h2>
           <div className="flex-1 overflow-y-auto">
-            {courseDetails.lectures.map((lecture, index) => (
+            {courseDetails.lectures.map((lecture) => (
               <Card
                 key={lecture._id}
                 className={`mb-3 hover:cursor-pointer transition transform ${
